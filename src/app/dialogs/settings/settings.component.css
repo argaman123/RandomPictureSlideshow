@@ -1,0 +1,17 @@
+.container {
+  width: 500px;
+}
+
+.keywords {
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: flex-end;
+}
+.mat-mdc-dialog-actions {
+  justify-content: space-between!important;
+}

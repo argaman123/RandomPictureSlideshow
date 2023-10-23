@@ -1,0 +1,72 @@
+<div class="container">
+  <h1 mat-dialog-title>Settings</h1>
+  <div mat-dialog-content>
+    <p>Keywords</p>
+    <mat-form-field class="keywords">
+      <mat-label>Subjects</mat-label>
+      <mat-chip-grid #chipGrid>
+        <mat-chip-row *ngFor="let keyword of keywords"
+                      (removed)="remove(keyword)"
+                      [editable]="true"
+                      (edited)="edit(keyword, $event)"
+                      [aria-description]="'press enter to edit ' + keyword.text">
+          {{keyword.text}}
+          <button matChipRemove [attr.aria-label]="'remove ' + keyword.text">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+        <input placeholder="New keyword..."
+               [matChipInputFor]="chipGrid"
+               [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+               [matChipInputAddOnBlur]="addOnBlur"
+               (matChipInputTokenEnd)="add($event)"/>
+      </mat-chip-grid>
+    </mat-form-field>
+    <br/>
+    <p>Resolution</p>
+    <div class="row">
+      <mat-form-field>
+        <mat-label>Width</mat-label>
+        <input matInput type="number" maxlength="4" [(ngModel)]="width">
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Height</mat-label>
+        <input matInput type="number" maxlength="4" [(ngModel)]="height">
+      </mat-form-field>
+    </div>
+    <br/>
+    <p>Interval</p>
+    <mat-form-field>
+      <mat-label>Seconds</mat-label>
+      <input matInput type="number" [(ngModel)]="settings.interval">
+    </mat-form-field>
+    <br/>
+    <p>Category</p>
+    <div class="row">
+      <mat-form-field>
+        <mat-select [(value)]="settings.specificCategory">
+          <mat-option *ngFor="let option of SpecificOptions | keys" [value]="option[0]">{{option[1]}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field *ngIf="specificRequired.includes(this.settings.specificCategory)">
+        <mat-label>{{SpecificOptions[settings.specificCategory]}}</mat-label>
+        <input matInput [(ngModel)]="settings.specific">
+      </mat-form-field>
+      <br/>
+    </div>
+    <div class="row">
+      <mat-slide-toggle
+        [(ngModel)]="settings.clock">
+        Show the clock
+      </mat-slide-toggle>
+      <mat-slide-toggle
+        [(ngModel)]="settings.animation">
+        Enable animation
+      </mat-slide-toggle>
+    </div>
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button [mat-dialog-close]="getSettings()" cdkFocusInitial>Save</button>
+  </div>
+</div>

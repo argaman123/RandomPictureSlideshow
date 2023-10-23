@@ -1,0 +1,64 @@
+{
+  "name": "angular-electron",
+  "version": "1.0.0",
+  "main": "main.js",
+  "build": {
+    "appId": "com.fiveam.notejs",
+    "productName": "Note JS",
+    "files": [
+      "main.js",
+      "backend",
+      "dist/random-picture-slideshow"
+    ],
+    "win": {
+      "target": [
+        {
+          "arch": [
+            "ia32"
+          ],
+          "target": "portable"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "electron:build": "set BUILD=true && ng build --base-href ./",
+    "electron:start": "wait-on tcp:4200 && electron .",
+    "electron:run-build": "npm run electron:build && electron .",
+    "electron:run-serve": "set BUILD=false && concurrently -k \"npm run start\" \"npm run electron:start\"",
+    "electron:exe": "npm run electron:build && electron-builder"
+  },
+  "private": true,
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^16.2.6",
+    "@angular/cli": "^16.2.6",
+    "@angular/compiler-cli": "^16.2.0",
+    "@types/jasmine": "~4.3.0",
+    "concurrently": "^8.2.2",
+    "electron": "22.3.23",
+    "electron-builder": "^24.6.4",
+    "jasmine-core": "~4.6.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.1.3",
+    "wait-on": "^7.0.1"
+  },
+  "dependencies": {
+    "@angular/animations": "^16.2.6",
+    "@angular/cdk": "^16.2.6",
+    "@angular/common": "^16.2.6",
+    "@angular/core": "^16.2.6",
+    "@angular/forms": "^16.2.6",
+    "@angular/material": "^16.2.6",
+    "@angular/platform-browser": "^16.2.10",
+    "@angular/platform-browser-dynamic": "^16.2.10",
+    "electron-store": "^8.1.0"
+  }
+}

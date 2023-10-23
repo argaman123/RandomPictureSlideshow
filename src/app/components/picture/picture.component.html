@@ -1,0 +1,13 @@
+<div class="container" (mousemove)="onMouseMove()">
+  <img #picture
+       crossorigin="anonymous"
+       [style.--animationTime]="settings.interval*3 + 's'"
+       [style.animation]="settings.animation ? '' : 'none'"
+       [src]="link" alt="" class="main-image" (click)="refresh()" (load)="changeClockColor()" draggable="false"/>
+  <div class="clock" [style.color]="clockColor" *ngIf="settings.clock">{{time | date:'HH:mm'}}</div>
+  <div class="menu" [ngClass]="{'move': mouseMove}">
+    <mat-icon [style.color]="clockColor"  (click)="openSettings()">tune</mat-icon>
+<!--    <mat-icon (click)="refresh()">refresh</mat-icon>-->
+    <mat-icon [style.color]="clockColor"  (click)="onFullscreen()">crop_free</mat-icon>
+  </div>
+</div>
