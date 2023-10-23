@@ -38,6 +38,19 @@ export class PictureComponent implements OnInit {
     this.mouseMoveTimer = setTimeout(() => this.mouseMove = false, 3000)
   }
 
+  download(){
+    const canvas = document.createElement('canvas')
+    const resolution = this.figureResolution()
+    canvas.width = resolution[0]
+    canvas.height = resolution[1]
+    const context = canvas.getContext('2d');
+    context!!.drawImage(this.picture.nativeElement, 0, 0);
+    const link = document.createElement('a');
+    link.download = this.settings.keywords.join("-") + '.png';
+    link.href = canvas.toDataURL()
+    link.click();
+  }
+
   constructor(private electron: ElectronService, private dialog: MatDialog) {
     console.log("settings", this.settings, JSON.parse(localStorage.getItem("settings") ?? '{}'))
   }
@@ -85,7 +98,7 @@ export class PictureComponent implements OnInit {
       + ('/' + part
       + '/' + this.settings.resolution
       + '/?' + this.settings.keywords.join(",")).replaceAll(/\/+/g,"/")
-      + "&sig=" + (new Date()).getTime()
+      + "&sig=" + ((new Date()).getTime() / 1000)
     console.log(this.link)
   }
 
