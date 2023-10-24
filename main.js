@@ -1,15 +1,46 @@
-const {app, BrowserWindow, ipcMain, webFrame, protocol} = require('electron')
+const { app, BrowserWindow, ipcMain, webFrame, protocol, Tray, Menu, nativeImage, screen } = require('electron')
 const path = require("path")
 const Store = require('electron-store');
 
 require("./backend")
+const { detachWindow, attachWindow, cleanup } = require("./wallpaperApi");
 
 protocol.registerSchemesAsPrivileged([{scheme: 'app', privileges: { secure: true, standard: true } }])
 const store = new Store();
 
 let mainWindow
+let tray
+let defaultBounds = {}
+
+/**
+ * Important Note:
+ * When attach(), detach(), and refresh() are used, for some reason,
+ * they must be at the bottom of the execution, otherwise bugs and errors appear.
+ */
+function createTrayMenu() {
+  tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'tray.png')));
+
+  const contextMenu = Menu.buildFromTemplate([
+    {
+      label: "Detach",
+      click: () => detachWindow(mainWindow, defaultBounds)
+    },
+    {
+      label: "Attach as wallpaper",
+      click: () => attachWindow(mainWindow)
+    },
+    {
+      label: "Close",
+      click: () => mainWindow.close()
+    }
+  ])
+  tray.setToolTip('Wallpaper App')
+  tray.setContextMenu(contextMenu)
+}
 
 function createWindow() {
+  createTrayMenu()
+
   mainWindow = new BrowserWindow({
     //transparent:true,
     // frame: false,
@@ -18,7 +49,8 @@ function createWindow() {
       contextIsolation: false,
     }
   })
-  mainWindow.setAspectRatio(parseFloat(store.get("ratio") ?? (1920/1080).toString()))
+  defaultBounds = mainWindow.getBounds()
+  mainWindow.setAspectRatio(parseFloat(store.get("ratio") ?? (1920 / 1080).toString()))
 
   if (process.env.BUILD ? (process.env.BUILD.trim() === "false") : false) {
     mainWindow.loadURL('http://localhost:4200').then()
@@ -30,6 +62,7 @@ function createWindow() {
     // mainWindow.webContents.openDevTools()
   }
   ipcMain.on("close", e => {
+    detachWindow(mainWindow)
     mainWindow.close()
   })
   ipcMain.on("fullscreen", (e, fullscreen) => {
@@ -56,6 +89,7 @@ app.on('ready', createWindow)
 
 app.on('window-all-closed', function () {
   if (process.platform !== 'darwin') app.quit()
+  cleanup()
 })
 
 app.on('activate', function () {
