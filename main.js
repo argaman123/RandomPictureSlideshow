@@ -11,12 +11,8 @@ const store = new Store();
 let mainWindow
 let tray
 let defaultBounds = {}
+let current = 0
 
-/**
- * Important Note:
- * When attach(), detach(), and refresh() are used, for some reason,
- * they must be at the bottom of the execution, otherwise bugs and errors appear.
- */
 function createTrayMenu() {
   tray = new Tray(nativeImage.createFromPath(path.join(__dirname, 'tray.png')));
 
@@ -28,6 +24,16 @@ function createTrayMenu() {
     {
       label: "Attach as wallpaper",
       click: () => attachWindow(mainWindow)
+    },
+    {
+      label: "Move right by 1920px",
+      click: () => {
+        mainWindow.setPosition(1920 * (current+1), 0)
+        current++
+
+        // avoid black screen
+        cleanup()
+      }
     },
     {
       label: "Close",

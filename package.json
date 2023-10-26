@@ -7,15 +7,14 @@
     "productName": "Note JS",
     "files": [
       "main.js",
+      "wallpaperApi.js",
+      "tray.png",
       "backend",
       "dist/random-picture-slideshow"
     ],
     "win": {
       "target": [
         {
-          "arch": [
-            "ia32"
-          ],
           "target": "portable"
         }
       ]
